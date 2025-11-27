@@ -3,112 +3,193 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SnapTik Clone - TikTok Downloader</title>
+    <title>Kevin Age - TikTok Downloader</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
     <style>
+        /* --- GAYA TAMPILAN (CSS) --- */
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'Poppins', sans-serif;
             margin: 0;
             padding: 0;
-            background-color: #f0f2f5;
-        }
-        .header {
-            background-color: #195fd7; /* Warna biru khas SnapTik */
-            padding: 60px 20px;
-            text-align: center;
-            color: white;
-        }
-        .header h1 {
-            margin: 0;
-            font-size: 2.5rem;
-        }
-        .header p {
-            font-size: 1.2rem;
-            opacity: 0.9;
-        }
-        .container {
-            max-width: 800px;
-            margin: -30px auto 0;
-            padding: 20px;
-        }
-        .input-group {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); /* Warna Gradient Ungu-Biru */
+            height: 100vh;
             display: flex;
-            background: white;
-            padding: 10px;
-            border-radius: 5px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            justify-content: center;
+            align-items: center;
+            color: #333;
         }
+
+        .container {
+            background: rgba(255, 255, 255, 0.9); /* Efek Kaca Putih */
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            width: 90%;
+            max-width: 500px;
+            text-align: center;
+            transition: transform 0.3s ease;
+        }
+
+        .container:hover {
+            transform: translateY(-5px); /* Efek melayang dikit pas di hover */
+        }
+
+        h1 {
+            color: #4a4a4a;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        p.subtitle {
+            color: #888;
+            font-size: 14px;
+            margin-bottom: 30px;
+        }
+
+        .input-group {
+            position: relative;
+            margin-bottom: 20px;
+        }
+
         input {
-            flex: 1;
-            padding: 15px;
-            border: none;
-            outline: none;
+            width: 100%;
+            padding: 15px 20px;
+            border: 2px solid #ddd;
+            border-radius: 50px; /* Bulat lonjong */
             font-size: 16px;
+            outline: none;
+            box-sizing: border-box;
+            transition: all 0.3s ease;
+            font-family: 'Poppins', sans-serif;
         }
+
+        input:focus {
+            border-color: #764ba2;
+            box-shadow: 0 0 10px rgba(118, 75, 162, 0.2);
+        }
+
         button {
-            background-color: #00b050; /* Warna hijau tombol download */
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(to right, #667eea, #764ba2);
             color: white;
             border: none;
-            padding: 10px 30px;
+            border-radius: 50px;
             font-size: 16px;
             font-weight: bold;
             cursor: pointer;
-            border-radius: 4px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
+            transition: transform 0.2s, box-shadow 0.2s;
+            margin-top: 10px;
         }
+
         button:hover {
-            background-color: #009945;
+            transform: scale(1.02);
+            box-shadow: 0 5px 15px rgba(118, 75, 162, 0.4);
         }
+
+        button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* Hasil Download */
         #result {
-            margin-top: 20px;
-            text-align: center;
-            display: none; /* Sembunyikan dulu */
+            display: none; /* Sembunyi dulu */
+            margin-top: 30px;
+            animation: fadeIn 0.5s ease-in-out;
+            border-top: 1px solid #eee;
+            padding-top: 20px;
         }
+
+        #videoThumb {
+            width: 100%;
+            border-radius: 15px;
+            margin-bottom: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
         .download-btn {
             display: inline-block;
-            background-color: #195fd7;
+            background-color: #00b894; /* Warna Hijau Mint */
             color: white;
-            padding: 15px 30px;
+            padding: 12px 30px;
             text-decoration: none;
-            border-radius: 5px;
-            margin-top: 10px;
+            border-radius: 50px;
             font-weight: bold;
+            box-shadow: 0 4px 10px rgba(0, 184, 148, 0.3);
+            transition: background 0.3s;
         }
+
+        .download-btn:hover {
+            background-color: #00a884;
+        }
+
+        /* Footer Branding */
+        .footer {
+            margin-top: 40px;
+            font-size: 12px;
+            color: #aaa;
+        }
+        .footer strong {
+            color: #764ba2;
+        }
+
+        /* Animasi Loading */
+        .loader {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #764ba2;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+            display: none;
+        }
+
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
 <body>
 
-    <div class="header">
-        <h1>Download Video TikTok</h1>
-        <p>TikTok Downloader Tanpa Watermark. Cepat. Semua Perangkat.</p>
-        
-        <div class="container">
-            <div class="input-group">
-                <input type="text" id="tiktokUrl" placeholder="Tempel tautan TikTok di sini">
-                <button onclick="processVideo()">
-                    Download
-                </button>
-            </div>
-        </div>
-    </div>
+    <div class="container">
+        <h1>TikTok Downloader</h1>
+        <p class="subtitle">Download video tanpa watermark, Cepat & Bersih.</p>
 
-    <div id="result">
-        <h3 id="videoTitle">Judul Video</h3>
-        <img id="videoThumb" src="" alt="Thumbnail" style="width: 200px; border-radius: 10px;"><br>
-        <a id="downloadLink" href="#" class="download-btn" target="_blank">Download Video</a>
+        <div class="input-group">
+            <input type="text" id="tiktokUrl" placeholder="Tempel link TikTok di sini...">
+        </div>
+        
+        <button onclick="processVideo()" id="btnSubmit">Download Video</button>
+        
+        <div class="loader" id="loader"></div>
+
+        <div id="result">
+            <h3 id="videoTitle" style="font-size: 16px; margin-bottom: 10px;">Judul Video</h3>
+            <img id="videoThumb" src="" alt="Thumbnail">
+            <a id="downloadLink" href="#" class="download-btn" target="_blank">Download Sekarang</a>
+        </div>
+
+        <div class="footer">
+            Design & Code by <strong>Kevin Age</strong>
+        </div>
     </div>
 
     <script>
         async function processVideo() {
             const url = document.getElementById('tiktokUrl').value;
             const resultDiv = document.getElementById('result');
-            const btn = document.querySelector('button');
+            const loader = document.getElementById('loader');
+            const btn = document.getElementById('btnSubmit');
 
-            if(!url) { alert("Masukkan link dulu!"); return; }
+            if(!url) { alert("Link-nya mana? Masukin dulu dong!"); return; }
 
-            // Ubah tombol jadi loading
-            btn.innerText = "Memproses...";
+            // Tampilan saat loading
+            btn.disabled = true;
+            btn.innerText = "Sedang Mencari...";
+            resultDiv.style.display = 'none';
+            loader.style.display = 'block';
             
             try {
                 const response = await fetch('/download', {
@@ -123,14 +204,17 @@
                     document.getElementById('videoTitle').innerText = data.title;
                     document.getElementById('videoThumb').src = data.thumbnail;
                     document.getElementById('downloadLink').href = data.download_url;
-                    resultDiv.style.display = 'block';
+                    resultDiv.style.display = 'block'; // Munculkan hasil
                 } else {
                     alert("Gagal: " + data.message);
                 }
             } catch (error) {
-                alert("Terjadi kesalahan sistem.");
+                alert("Waduh, ada kesalahan sistem.");
             } finally {
-                btn.innerText = "Download";
+                // Kembalikan tampilan tombol
+                btn.disabled = false;
+                btn.innerText = "Download Video";
+                loader.style.display = 'none';
             }
         }
     </script>
