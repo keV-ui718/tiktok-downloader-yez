@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SnapTik Clone - TikTok Downloader</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f0f2f5;
+        }
+        .header {
+            background-color: #195fd7; /* Warna biru khas SnapTik */
+            padding: 60px 20px;
+            text-align: center;
+            color: white;
+        }
+        .header h1 {
+            margin: 0;
+            font-size: 2.5rem;
+        }
+        .header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+        .container {
+            max-width: 800px;
+            margin: -30px auto 0;
+            padding: 20px;
+        }
+        .input-group {
+            display: flex;
+            background: white;
+            padding: 10px;
+            border-radius: 5px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        input {
+            flex: 1;
+            padding: 15px;
+            border: none;
+            outline: none;
+            font-size: 16px;
+        }
+        button {
+            background-color: #00b050; /* Warna hijau tombol download */
+            color: white;
+            border: none;
+            padding: 10px 30px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        button:hover {
+            background-color: #009945;
+        }
+        #result {
+            margin-top: 20px;
+            text-align: center;
+            display: none; /* Sembunyikan dulu */
+        }
+        .download-btn {
+            display: inline-block;
+            background-color: #195fd7;
+            color: white;
+            padding: 15px 30px;
+            text-decoration: none;
+            border-radius: 5px;
+            margin-top: 10px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <h1>Download Video TikTok</h1>
+        <p>TikTok Downloader Tanpa Watermark. Cepat. Semua Perangkat.</p>
+        
+        <div class="container">
+            <div class="input-group">
+                <input type="text" id="tiktokUrl" placeholder="Tempel tautan TikTok di sini">
+                <button onclick="processVideo()">
+                    Download
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div id="result">
+        <h3 id="videoTitle">Judul Video</h3>
+        <img id="videoThumb" src="" alt="Thumbnail" style="width: 200px; border-radius: 10px;"><br>
+        <a id="downloadLink" href="#" class="download-btn" target="_blank">Download Video</a>
+    </div>
+
+    <script>
+        async function processVideo() {
+            const url = document.getElementById('tiktokUrl').value;
+            const resultDiv = document.getElementById('result');
+            const btn = document.querySelector('button');
+
+            if(!url) { alert("Masukkan link dulu!"); return; }
+
+            // Ubah tombol jadi loading
+            btn.innerText = "Memproses...";
+            
+            try {
+                const response = await fetch('/download', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ url: url })
+                });
+
+                const data = await response.json();
+
+                if (data.status === 'success') {
+                    document.getElementById('videoTitle').innerText = data.title;
+                    document.getElementById('videoThumb').src = data.thumbnail;
+                    document.getElementById('downloadLink').href = data.download_url;
+                    resultDiv.style.display = 'block';
+                } else {
+                    alert("Gagal: " + data.message);
+                }
+            } catch (error) {
+                alert("Terjadi kesalahan sistem.");
+            } finally {
+                btn.innerText = "Download";
+            }
+        }
+    </script>
+</body>
+</html>
